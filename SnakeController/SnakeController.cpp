@@ -63,6 +63,7 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
     }
 }
 
+
 void Controller::receive(std::unique_ptr<Event> e)
 {
     try {
@@ -86,7 +87,7 @@ void Controller::receive(std::unique_ptr<Event> e)
             lost = true;
             return;
         }
-
+ 
         for (auto segment : m_segments) {
             if (segment.x == newHead.x and segment.y == newHead.y) {
                 m_scorePort.send(std::make_unique<EventT<LooseInd>>());
@@ -94,7 +95,7 @@ void Controller::receive(std::unique_ptr<Event> e)
                 return;
             }
         }
-        
+
         if (std::make_pair(newHead.x, newHead.y) == m_foodPosition)
         {
             m_scorePort.send(std::make_unique<EventT<ScoreInd>>());
