@@ -77,20 +77,8 @@ void Controller::receive(std::unique_ptr<Event> e)
 
         bool lost = false;
 
-        for (auto segment : m_segments) {
-            if (segment.x == newHead.x and segment.y == newHead.y) {
-                m_scorePort.send(std::make_unique<EventT<LooseInd>>());
-                lost = true;
-                return;
-            }
-        }
-
-        if (std::make_pair(newHead.x, newHead.y) == m_foodPosition)
-        {
-            m_scorePort.send(std::make_unique<EventT<ScoreInd>>());
-            m_foodPort.send(std::make_unique<EventT<FoodReq>>());
-        }
-        else if (newHead.x < 0 or newHead.y < 0 or
+        
+        if (newHead.x < 0 or newHead.y < 0 or
                  newHead.x >= m_mapDimension.first or
                  newHead.y >= m_mapDimension.second)
         {
@@ -98,6 +86,21 @@ void Controller::receive(std::unique_ptr<Event> e)
             lost = true;
             return;
         }
+
+        for (auto segment : m_segments) {
+            if (segment.x == newHead.x and segment.y == newHead.y) {
+                m_scorePort.send(std::make_unique<EventT<LooseInd>>());
+                lost = true;
+                return;
+            }
+        }
+        
+        if (std::make_pair(newHead.x, newHead.y) == m_foodPosition)
+        {
+            m_scorePort.send(std::make_unique<EventT<ScoreInd>>());
+            m_foodPort.send(std::make_unique<EventT<FoodReq>>());
+        }
+       
         else
         {
             for (auto &segment : m_segments)
